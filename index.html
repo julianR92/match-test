@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match</title>
+    
+  </head>
+  <style>
+       
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    button {
+        margin-top: 1rem;
+    }
+    input{
+        margin: .5rem;
+    }
+  </style>
+  <body>
+    <h1>Mach Exercise</h1>
+    <form action="" id="myForm" method="">
+      <label for="numeros">Numeros (separados por comas)*</label>
+      <input
+        type="text"
+        name="numeros"
+        id="numeros"
+        pattern="^([-+]?[0-9]+[-,])*[+-]?[0-9]+$"
+        required
+        title="No uses caracteres diferentes a la comas, ni dejes comas abiertas"
+      /> <br/>
+      <label for="numeros">Suma*</label>
+      <input
+        type="number"
+        name="suma"
+        id="suma"
+        pattern="^[0-9]+"
+        required
+      /><br/>
+      <button type="sumbit">Execute</button>
+    </form>
+    <p id="parrafo"></p>
+
+    <script>
+      const form = document.getElementById("myForm");
+      const numero = document.getElementById("numeros");
+      const suma = document.getElementById("suma");
+      const $p = document.getElementById("parrafo");
+      
+      let numeros = [];
+      const ejercicioMatch = (n, sum1) => {
+        let map = new Map();
+        //recorro el array y armo el map contando cuantas veces esta cada numero
+        for (var i = 0; i < n; i++) {
+          if (!map.has(numeros[i])) {
+            map.set(numeros[i], 0);
+          }
+      
+          map.set(numeros[i], map.get(numeros[i]) + 1);
+        }
+        let parejas = [];
+      
+        for (i = 0; i < n; i++) {
+          //comparo si da la suma
+          let substract = sum1 - numeros[i];
+          if (map.get(substract)) {
+            //los ordeno para eliminar duplicados
+            parejas[i] = [substract, numeros[i]].sort();
+          }
+          //elimino numeros repetidos
+          if (substract == numeros[i]) {
+            // console.log("hay un repetido y es", numeros[i], i);
+            parejas.splice(i, i);
+          }
+        }
+        let filtered = parejas.filter(((t = {}), (a) => !(t[a] = a in t)));
+        if (filtered.length == 0) return " NO HUBO COINCIDENCIAS 🙃 ";
+      
+        return filtered.join(" + ");
+      };
+      
+      form.addEventListener("submit", (e) => {
+        let array = [];
+        e.preventDefault();
+        array = numero.value.split(",").map((i) => Number(i));
+        let numerosData = array.filter(myFilter);
+        numeros = [...numerosData];
+        let n = numeros.length;
+        const a3 = performance.now();
+        $p.textContent = null;
+        $p.textContent =
+          "😎 Resultado para la suma de: " +
+          suma.value +
+          " con array : " +
+          JSON.stringify(numeros) +
+          " ➡️➡️ " +
+          ejercicioMatch(n, parseInt(suma.value));
+        form.reset();
+        const a4 = performance.now();
+        //tiempo de ejecucion
+        console.log(`Time: ${a3 - a4}`);
+      });
+      
+      function myFilter(elm) {
+        return elm != null && elm !== false && elm !== "";
+      }
+      
+
+    </script>
+  </body>
+</html>
